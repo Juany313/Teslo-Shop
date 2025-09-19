@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button"
-import type { Product } from "@/mocks/products.mock"
-import { ChevronLeft, ChevronRight, Filter, Grid, List } from "lucide-react"
+import { Filter, Grid, List } from "lucide-react"
 import { ProductCard } from "./ProductCard"
 import { FilterSidebar } from "./FilterSidebar"
 import { useSearchParams } from "react-router"
 import { useState } from "react"
+import type { Product } from "@/interfaces/product.interface"
 
 interface Props {
     products: Product[]
@@ -25,7 +25,7 @@ export const ProductsGrid = ({products}: Props) => {
     }
 
   return (
-    <section className="py-12 px-4 lg:px-8">
+    <section className="py-6 px-4 lg:px-8">
         <div className="container mx-auto">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
@@ -92,17 +92,18 @@ export const ProductsGrid = ({products}: Props) => {
             <div className="flex-1">
               <div className={
                 viewMode === 'grid' 
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" 
-                  : "space-y-4"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 " 
+                  : "space-y-4 "
               }>
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}
                     id={product.id}
-                    name={product.name}
+                    name={product.title}
                     price={product.price}
-                    image={product.image}
-                    category={product.category}
+                    image={product.images[0]}
+                    category={product.gender}
+                    sizes={product.sizes}
                   />
                 ))}
               </div>
