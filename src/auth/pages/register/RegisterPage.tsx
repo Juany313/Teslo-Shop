@@ -4,13 +4,42 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CustomLogo } from "@/components/custom/CustomLogo"
 import { Link } from "react-router"
+import { useAuthStore } from "@/auth/store/auth.store"
+import type { FormEvent } from "react"
+import { toast } from "sonner"
 
 export const RegisterPage = () => {
+
+  const {register} = useAuthStore();
+
+  const handleRegister = async(event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData( event.target as HTMLFormElement );
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const fullName = formData.get('fullName') as string;
+
+    console.log({ email, password, fullName });
+    
+    const form = event.currentTarget as HTMLFormElement;
+    const isValid = await register(email, password, fullName);
+
+    form.reset(); // 🔥 limpia siempre
+
+    if (!isValid) {
+      toast.error('Correo no válido!');
+    } else {
+      toast.success('Registro exitoso!');
+    }
+    
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleRegister}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <CustomLogo />
@@ -20,11 +49,11 @@ export const RegisterPage = () => {
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="fullName">Nombre completo</Label>
-                <Input id="FullName" type="text" placeholder="Nombre completo" required />
+                <Input id="fullName" type="text" name="fullName" placeholder="Nombre completo" required />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Correo</Label>
-                <Input id="email" type="email" placeholder="mail@google.com" required />
+                <Input id="email" type="email" name="email" placeholder="mail@google.com" required />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
@@ -33,7 +62,7 @@ export const RegisterPage = () => {
                     Olvidaste u contraseña?
                   </a>
                 </div>
-                <Input id="password" type="password" placeholder="Contraseña" required />
+                <Input id="password" type="password" name="password" placeholder="Contraseña" required />
               </div>
               <Button type="submit" className="w-full">
                 Crear cuenta

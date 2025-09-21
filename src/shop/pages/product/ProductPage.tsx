@@ -1,7 +1,13 @@
 
 
 export const ProductPage = () => {
+
+
   return (
-    <div>ProductPage</div>
+    <>
+      <h1 className="text-3xl font-montserrat">ProductPage</h1>
+
+
+    </>
   )
 }
