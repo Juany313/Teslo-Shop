@@ -1,11 +1,22 @@
 import { AdminTitle } from "@/admin/components/AdminTitle"
+import { CustomFullScreenLoading } from "@/components/custom/CustomFullScreenLoading"
 import { CustomPagination } from "@/components/custom/CustomPagination"
 import { Button } from "@/components/ui/button"
-import * as table from "@/components/ui/table"
-import { PlusIcon } from "lucide-react"
+import { Table, TableHead,TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
+import { currencyFormatter } from "@/lib/currency-formatter";
+
+import { useProducts } from "@/shop/hooks/useProducts"
+import { PencilIcon, PlusIcon } from "lucide-react"
 import { Link } from "react-router"
 
 export const AdminProductsPage = () => {
+
+  const { data, isLoading } = useProducts();
+
+  if( isLoading ) {
+    return <CustomFullScreenLoading/>
+  }
+
   return (
     <>
 
@@ -26,43 +37,58 @@ export const AdminProductsPage = () => {
         </div>
       </div>
 
-      <table.Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10">
-        <table.TableHeader>
-          <table.TableRow>
-            <table.TableHead className="w-[100px]">ID</table.TableHead>
-            <table.TableHead>Imagen</table.TableHead>
-            <table.TableHead>Nombre</table.TableHead>
-            <table.TableHead>Precio</table.TableHead>
-            <table.TableHead>Categoría</table.TableHead>
-            <table.TableHead>Inventario</table.TableHead>
-            <table.TableHead>Tallas</table.TableHead>
-            <table.TableHead className="text-right">Acciones</table.TableHead>
-          </table.TableRow>
-        </table.TableHeader>
-        <table.TableBody>
-          <table.TableRow>
-            <table.TableCell className="font-medium">1</table.TableCell>
-            <table.TableCell>
-              <img
-                src="https://placehold.co/250x250"
-                className="w-20 h-20 object-cover rounded-md"
-              />
-            </table.TableCell>
-            <table.TableCell>Producto 1</table.TableCell>
-            <table.TableCell>$250.00</table.TableCell>
-            <table.TableCell>Categoría 1</table.TableCell>
-            <table.TableCell>100 stock</table.TableCell>
-            <table.TableCell>XS,S,L</table.TableCell>
-            <table.TableCell className="text-right">
-              <Link to='/admin/products/t-shirt-teslo'>
-                Editar
-              </Link>
-            </table.TableCell>
-          </table.TableRow>
-        </table.TableBody>
-      </table.Table>
+      <Table className="bg-white p-10 shadow-xs border border-gray-200 mb-10">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Imagen</TableHead>
+            <TableHead>Nombre</TableHead>      <TableHead>Precio</TableHead>
+            <TableHead>Categoría</TableHead>
+            <TableHead>Inventario</TableHead>
+            <TableHead>Tallas</TableHead>
+            <TableHead className="text-right">Acciones</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {
+            data?.products.map((product) => (
 
-      <CustomPagination totalPages={10} />
+              <TableRow>
+                <TableCell>
+                  <img
+                    src={ product.images[0] }
+                    alt={ product.title }
+                    className="w-20 h-20 object-cover rounded-md"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Link 
+                    to={`/admin/products/${ product.id }`}
+                    className="hover:text-blue-500"
+                  >
+                    {product.title}
+                  </Link>
+                </TableCell>
+                <TableCell>{ currencyFormatter(product.price) }</TableCell>
+                <TableCell>{ product.gender }</TableCell>
+                <TableCell>{ product.stock }</TableCell>
+                <TableCell>{ product.sizes }</TableCell>
+                <TableCell className="text-right">
+                  <Link to={ `/admin/products/${ product.id }` }>
+                    <PencilIcon
+                      className="w-4 h-4 text-blue-500"
+                    />
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
+
+      {/* Sticky paginación */}
+      <div className="sticky bottom-0 bg-white py-4 z-10 flex justify-center">
+            <CustomPagination totalPages={ data?.pages || 0}  />
+      </div>
     </>
   )
 }
