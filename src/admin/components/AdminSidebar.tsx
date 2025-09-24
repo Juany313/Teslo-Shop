@@ -37,7 +37,6 @@ export const AdminSidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) 
     { icon: HelpCircle, label: 'Ayuda' },
   ];
 
-  console.log(pathname);
   
   const isActiveRoute = ( to: string ) => {
 
