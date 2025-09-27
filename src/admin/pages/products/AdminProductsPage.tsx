@@ -41,7 +41,8 @@ export const AdminProductsPage = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Imagen</TableHead>
-            <TableHead>Nombre</TableHead>      <TableHead>Precio</TableHead>
+            <TableHead>Nombre</TableHead>      
+            <TableHead>Precio</TableHead>
             <TableHead>Categoría</TableHead>
             <TableHead>Inventario</TableHead>
             <TableHead>Tallas</TableHead>
@@ -51,8 +52,7 @@ export const AdminProductsPage = () => {
         <TableBody>
           {
             data?.products.map((product) => (
-
-              <TableRow>
+              <TableRow key={product.id}>
                 <TableCell>
                   <img
                     src={ product.images[0] }
