@@ -1,10 +1,13 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getProductsAction } from "../actions/get-products.action"
 import { useParams, useSearchParams } from "react-router"
+import { deleteProductAction } from "../actions/delete-product.action";
 
 
 
 export const useProducts = () => {
+
+  const queryClient = useQueryClient();
 
   // Todo: viene lógica
   const [ searchParams ] = useSearchParams();
@@ -50,7 +53,9 @@ export const useProducts = () => {
       break;
   }
 
-  return useQuery({
+  
+
+  const productsQuery = useQuery({
     queryKey: ['products', { offset, limit, gender, sizes, minPrice, maxPrice, query}],
     queryFn: () => getProductsAction({
       limit: isNaN(+limit)? 6 : limit,
@@ -63,4 +68,18 @@ export const useProducts = () => {
     }),
     staleTime: 1000 * 60 * 5,
   })
+
+  // Mutación para eliminar producto
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteProductAction(id),
+    onSuccess: () => {
+      // Invalidar la query para refetch
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+    },
+  })
+
+  return {
+  ...productsQuery,
+  deleteMutation
+  }
 }

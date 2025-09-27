@@ -8,10 +8,11 @@ import { currencyFormatter } from "@/lib/currency-formatter";
 import { useProducts } from "@/shop/hooks/useProducts"
 import { PencilIcon, PlusIcon } from "lucide-react"
 import { Link } from "react-router"
+import { DeleteButton } from "./components/DeleteProductButton";
 
 export const AdminProductsPage = () => {
 
-  const { data, isLoading } = useProducts();
+  const { data, isLoading, deleteMutation } = useProducts();
 
   if( isLoading ) {
     return <CustomFullScreenLoading/>
@@ -72,13 +73,15 @@ export const AdminProductsPage = () => {
                 <TableCell>{ product.gender }</TableCell>
                 <TableCell>{ product.stock }</TableCell>
                 <TableCell>{ product.sizes.join(', ') }</TableCell>
-                <TableCell className="text-right">
-                  <Link to={ `/admin/products/${ product.id }` }>
-                    <PencilIcon
-                      className="w-4 h-4 text-blue-500"
-                    />
-                  </Link>
-                </TableCell>
+               <TableCell className="text-right flex justify-end gap-2">
+                {/* Editar */}
+                <Link to={`/admin/products/${product.id}`}>
+                  <PencilIcon className="w-4 h-4 text-blue-500" />
+                </Link>
+
+                {/* Eliminar */}
+                <DeleteButton productId={product.id} deleteMutation={deleteMutation} />
+              </TableCell>
               </TableRow>
             ))
           }
