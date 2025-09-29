@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/auth/store/auth.store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Size } from "@/interfaces/product.interface";
@@ -12,6 +13,10 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ name, price, image, category, sizes }: ProductCardProps) => {
+
+    //Zustand
+    const { authStatus,  } = useAuthStore();
+
   return (
     <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
       <CardContent className="p-0">
@@ -34,6 +39,8 @@ export const ProductCard = ({ name, price, image, category, sizes }: ProductCard
           
           <div className="flex items-center justify-between">
             <p className="font-semibold text-lg">${price}</p>
+            {
+              (authStatus === 'authenticated') &&
             <Button 
               size="sm" 
               variant="outline"
@@ -41,6 +48,7 @@ export const ProductCard = ({ name, price, image, category, sizes }: ProductCard
             >
               Agregar al carrito
             </Button>
+            }
           </div>
         </div>
       </CardContent>
